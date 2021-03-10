@@ -166,6 +166,23 @@ target_link_libraries(avt_triggering
   ${CMAKE_CURRENT_SOURCE_DIR}/lib/libVimbaImageTransform.so
 )
 
+##own
+add_executable(avt_triggering2
+        src/avt_triggering2.cpp
+        src/MessagePublisher2.cpp
+        )
+add_dependencies(avt_triggering2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+target_link_libraries(avt_triggering2
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/libVimbaC.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/libVimbaCPP.so
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/libVimbaImageTransform.so
+        )
+
+
+
 add_executable(img_viewer
   src/img_viewer.cpp
 )
@@ -174,12 +191,31 @@ target_link_libraries(img_viewer
   ${OpenCV_LIBS}
 )
 
+
+##own
+add_executable(img_viewer2
+        src/img_viewer2.cpp
+        )
+target_link_libraries(img_viewer2
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
+)
+
 add_executable(img_publisher
   src/img_publisher.cpp
 )
 target_link_libraries(img_publisher
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
+)
+
+##own
+add_executable(img_publisher2
+        src/img_publisher2.cpp
+        )
+target_link_libraries(img_publisher2
+        ${catkin_LIBRARIES}
+        ${OpenCV_LIBS}
 )
 
 #############

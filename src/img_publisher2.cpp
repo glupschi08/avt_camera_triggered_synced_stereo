@@ -8,10 +8,10 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "image_publisher");
+  ros::init(argc, argv, "image_publisher2");
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
-  image_transport::Publisher pub = it.advertise("avt_camera_img", 1);
+  image_transport::Publisher pub = it.advertise("avt_camera_img2", 1);
   // change file path as needed
   std::string package_path = ros::package::getPath("avt_camera");
   std::string img_path =  package_path + "/images/test_image.jpeg";

@@ -3,7 +3,7 @@
     hui.xiao@uconn.edu
 ==============================================================*/
 
-#include "avt_camera_streaming/MessagePublisher.h"
+#include "avt_camera_streaming/MessagePublisher2.h"
 
 
 void MessagePublisher::PublishImage(cv::Mat &image, unsigned long long ts_cam)

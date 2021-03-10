@@ -13,13 +13,13 @@ hui.xiao@uconn.edu
 #include "Common/StreamSystemInfo.h"
 #include "Common/ErrorCodeToMessage.h"
 #include "avt_camera_streaming/CamParam.h"
-#include "avt_camera_streaming/MessagePublisher.h"
+#include "avt_camera_streaming/MessagePublisher2.h"
 #include "std_msgs/String.h"
 
 /*From Vimba C++ manual: To assure correct continuous image capture, use at least two or three frames. The appropriate number of frames to be queued in your application depends on the frames per second the camera 
 delivers and on the speed with which you are able to re-queue frames (also taking into consideration the 
 operating system load). The image frames are filled in the same order in which they were queued.*/
-#define NUM_OF_FRAMES 1 //orig 3
+#define NUM_OF_FRAMES 1    //orig 3
 
 //define observer that reacts on new frames
 class FrameObserver : public AVT::VmbAPI::IFrameObserver
@@ -613,7 +613,7 @@ void AVTCamera::SetCameraFeature()
 
 int main( int argc, char* argv[])
 {
-    ros::init(argc, argv, "triggered_avt_camera", ros::init_options::AnonymousName);
+    ros::init(argc, argv, "triggered_avt_camera2", ros::init_options::AnonymousName);
     AVTCamera avt_cam;
     avt_cam.StartAcquisition();
     while(ros::ok())
