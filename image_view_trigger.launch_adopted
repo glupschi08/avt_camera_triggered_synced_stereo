@@ -1,0 +1,18 @@
+<launch>
+    <node name="avt_camera_triggered" pkg="avt_camera" type="avt_triggering" output="screen">
+        <param name="~cam_IP" type="str" value="169.254.198.241" />
+        <param name="~image_height" type="int" value="1544"/>
+        <param name="~image_width" type="int" value="2064"/>
+        <param name="~offsetX" type="int" value="0"/>
+        <param name="~offsetY" type="int" value="0"/>
+        <param name="~exposure_in_us" type="int" value="10000"/>
+        <param name="~trigger_source" type="str" value="Software"/>
+        <param name="~frame_rate" type="double" value="50"/>
+        <param name="~balance_white_auto" type="bool" value="false"/>
+        <param name="~exposure_auto" type="bool" value="false"/>
+        <param name="~gain" type="int" value="0"/>
+    </node>
+    <node name="img_viewer" pkg="avt_camera" type="img_viewer">
+        <remap from="image" to="avt_camera_img"/>
+    </node>
+</launch>

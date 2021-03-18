@@ -23,6 +23,12 @@ struct CameraParam
     // fram_rate could be: FixedRate, Software, FreeRun
     bool balance_white_auto;
     bool exposure_auto;
+
+    //Todo remember own
+    std::string ptp_mode;
+    std::string camera_info_url_;
+    int binninghorizontal;
+    int binningvertical;
 };
 
 

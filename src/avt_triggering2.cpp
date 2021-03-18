@@ -97,7 +97,7 @@ private:
     void triggerCb(const std_msgs::String::ConstPtr& msg);
     // this function fetch parameters from ROS server
     void getParams(ros::NodeHandle &n, CameraParam &cp);
-    void SetCameraImageSize(const VmbInt64_t& width, const VmbInt64_t& height, const VmbInt64_t& offsetX, const VmbInt64_t& offsetY);
+    void SetCameraImageSize(const VmbInt64_t& width, const VmbInt64_t& height, const VmbInt64_t& offsetX, const VmbInt64_t& offsetY, const VmbInt64_t& binninghorizontal, const VmbInt64_t& binningvertical);
     void SetExposureTime(const VmbInt64_t & time_in_us);
     void SetAcquisitionFramRate(const double & fps); 
     void SetGain(const VmbInt64_t & gain);
@@ -122,6 +122,9 @@ void AVTCamera::triggerCb(const std_msgs::String::ConstPtr& msg)
 
 void AVTCamera::getParams(ros::NodeHandle &n, CameraParam &cam_param)
 {
+    //Todo remmber own
+    int binninghorizontal, binningvertical;
+
     int height,width,exposure,gain;
     int offsetX, offsetY;
     double fps;
@@ -235,6 +238,37 @@ void AVTCamera::getParams(ros::NodeHandle &n, CameraParam &cam_param)
         ROS_ERROR("failed to get param 'gain' ");
     }
 
+    //Todo remember own
+    if(n.getParam("binninghorizontal", binninghorizontal))
+    {
+        ROS_INFO("Got binninghorizontal %i", binninghorizontal);
+    }
+    else
+    {
+        binninghorizontal = 1;
+        ROS_ERROR("failed to get param 'binninghorizontal' ");
+    }
+    if(n.getParam("binningvertical", binningvertical))
+    {
+        ROS_INFO("Got binningvertical %i", binningvertical);
+    }
+    else
+    {
+        binningvertical = 1;
+        ROS_ERROR("failed to get param 'binningvertical' ");
+    }
+    if(n.getParam("ptp_mode", cam_param.ptp_mode))
+    {
+        ROS_INFO_STREAM("ptp_mode is " << cam_param.ptp_mode);
+    }
+    else
+    {
+        cam_param.ptp_mode = "Off";
+        ROS_ERROR("failed to get param 'ptp_mode' ");
+    }
+    cam_param.binninghorizontal = binninghorizontal;
+    cam_param.binningvertical = binningvertical;
+
     cam_param.image_height = height;
     cam_param.image_width = width;
     cam_param.exposure_in_us = exposure;
@@ -296,7 +330,7 @@ void AVTCamera::StopAcquisition()
     sys.Shutdown();
 }
 
-void AVTCamera::SetCameraImageSize(const VmbInt64_t& width, const VmbInt64_t& height, const VmbInt64_t& offsetX, const VmbInt64_t& offsetY)
+void AVTCamera::SetCameraImageSize(const VmbInt64_t& width, const VmbInt64_t& height, const VmbInt64_t& offsetX, const VmbInt64_t& offsetY, const VmbInt64_t& binninghorizontal, const VmbInt64_t& binningvertical)
 {
 	// set the offset value to centralize the image.
 	//VmbInt64_t offset_x = int((1600 - width) / 2);
@@ -386,7 +420,55 @@ void AVTCamera::SetCameraImageSize(const VmbInt64_t& width, const VmbInt64_t& he
             ROS_ERROR("failed to set OffsetY");
 		}
 	}
-	
+
+
+    //Todo remmeber own
+    //VmbInt64_t BinningHorizontal_loc=2;
+    //VmbInt64_t BinningVertical_loc=2;
+
+    err = camera->GetFeatureByName("BinningHorizontal", pFeature);
+    if (err == VmbErrorSuccess)
+    {
+        err = pFeature->SetValue(binninghorizontal);
+        if (VmbErrorSuccess == err)
+        {
+            bool bIsCommandDone = false;
+            do
+            {
+                if (VmbErrorSuccess != pFeature->IsCommandDone(bIsCommandDone))
+                {
+                    break;
+                }
+            } while (false == bIsCommandDone);
+        }
+        else
+        {
+            ROS_ERROR("failed to set BinningHorizontal");
+        }
+    }
+    err = camera->GetFeatureByName("BinningVertical", pFeature);
+    if (err == VmbErrorSuccess)
+    {
+        err = pFeature->SetValue(binningvertical);
+        if (VmbErrorSuccess == err)
+        {
+            bool bIsCommandDone = false;
+            do
+            {
+                if (VmbErrorSuccess != pFeature->IsCommandDone(bIsCommandDone))
+                {
+                    break;
+                }
+            } while (false == bIsCommandDone);
+        }
+        else
+        {
+            ROS_ERROR("failed to set BinningVertical");
+        }
+    }
+
+
+
 }
 
 void AVTCamera::SetExposureTime(const VmbInt64_t & time_in_us)
@@ -499,7 +581,7 @@ void AVTCamera::SetCameraFeature()
 {
     VmbErrorType err;
     SetExposureTime(cam_param.exposure_in_us);
-    SetCameraImageSize(cam_param.image_width, cam_param.image_height, cam_param.offsetX, cam_param.offsetY);
+    SetCameraImageSize(cam_param.image_width, cam_param.image_height, cam_param.offsetX, cam_param.offsetY, cam_param.binninghorizontal, cam_param.binningvertical);
     SetAcquisitionFramRate(cam_param.frame_rate);
     SetGain(cam_param.gain);
 
@@ -521,6 +603,33 @@ void AVTCamera::SetCameraFeature()
     {
         ROS_ERROR("Failed to set acquisition mode");
     }
+
+    //Todo remmeber own
+    // Set ptp_mode
+    camera->GetFeatureByName("PtpMode", pFeature);
+    if(cam_param.ptp_mode == "Slave")
+    {
+        err = pFeature->SetValue("Slave");
+    }
+    else if(cam_param.ptp_mode == "Master")
+    {
+        err = pFeature->SetValue("Master");
+    }
+    else if(cam_param.ptp_mode == "Auto")
+    {
+        err = pFeature->SetValue("Auto");
+    }
+    else
+    {
+        err = pFeature->SetValue("Off");
+        if(cam_param.ptp_mode != "Off")
+        {
+            ROS_ERROR("Invalid ptp_mode. Valid values are from set {Off, Slave, Master, Auto}");
+        }
+    }
+
+
+
 
     // Set Trigger source
     camera->GetFeatureByName("TriggerSource", pFeature);
