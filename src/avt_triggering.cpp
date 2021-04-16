@@ -53,8 +53,8 @@ public:
                     prev_ros_time=ros_time.toNSec();
                     ts_cam_previous=ts_cam;
 
-                    VmbUint32_t width=1600;	
-                    VmbUint32_t height=1200;
+                    VmbUint32_t width=688;	//1600
+                    VmbUint32_t height=512;  //1200
                     pFrame->GetHeight(height);
                     pFrame->GetWidth(width);
                     //ROS_INFO("received an image");
@@ -726,9 +726,11 @@ int main( int argc, char* argv[])
     ros::init(argc, argv, "triggered_avt_camera", ros::init_options::AnonymousName);
     AVTCamera avt_cam;
     avt_cam.StartAcquisition();
+    ros::Rate rate(300); //todo own remove
     while(ros::ok())
     {
         ros::spinOnce();
+        rate.sleep();
     }
     avt_cam.StopAcquisition();
 }

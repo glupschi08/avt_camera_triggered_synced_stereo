@@ -1,21 +1,18 @@
 <launch>
-    <node name="avt_camera_triggered2" pkg="avt_camera" type="avt_triggering2" output="screen">
-        <param name="~cam_IP" type="str" value="169.254.25.254" />
+    <node name="avt_camera_triggered" pkg="avt_camera" type="avt_triggering" output="screen">
+        <param name="~cam_IP" type="str" value="169.254.198.241" />
         <param name="~image_height" type="int" value="512"/>
         <param name="~image_width" type="int" value="688"/>
-        <param name="~offsetX" type="int" value="64"/>
-        <param name="~offsetY" type="int" value="84"/>
+        <param name="~offsetX" type="int" value="0"/>
+        <param name="~offsetY" type="int" value="0"/>
         <param name="~exposure_in_us" type="int" value="10000"/>
         <param name="~trigger_source" type="str" value="Software"/>
         <param name="~frame_rate" type="double" value="50"/>
         <param name="~balance_white_auto" type="bool" value="false"/>
         <param name="~exposure_auto" type="bool" value="false"/>
-        <param name="~gain" type="int" value="7"/>
+        <param name="~gain" type="int" value="0"/>
         <param name="~binninghorizontal" type="int" value="3"/>
         <param name="~binningvertical" type="int" value="3"/>
         <param name="~ptp_mode" type="str" value="Slave"/>
-    </node>
-    <node name="img_viewer2" pkg="avt_camera" type="img_viewer2">
-        <remap from="image" to="avt_camera_img2"/>
     </node>
 </launch>

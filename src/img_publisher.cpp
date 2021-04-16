@@ -19,7 +19,7 @@ int main(int argc, char** argv)
   cv::waitKey(30);
   sensor_msgs::ImagePtr msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
   // change the publish rate here
-  ros::Rate loop_rate(30);//orig 1
+  ros::Rate loop_rate(1);//orig 1
   while (nh.ok()) {
     pub.publish(msg);
     ros::spinOnce();

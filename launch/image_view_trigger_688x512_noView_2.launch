@@ -15,7 +15,4 @@
         <param name="~binningvertical" type="int" value="3"/>
         <param name="~ptp_mode" type="str" value="Slave"/>
     </node>
-    <node name="img_viewer2" pkg="avt_camera" type="img_viewer2">
-        <remap from="image" to="avt_camera_img2"/>
-    </node>
 </launch>
